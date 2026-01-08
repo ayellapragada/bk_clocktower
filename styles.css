@@ -48,8 +48,8 @@ body {
     height: 120px;
     border-radius: 50%;
     object-fit: cover;
-    border: 3px solid var(--gold);
-    box-shadow: 0 0 30px rgba(212, 175, 55, 0.3);
+    border: 1px solid #8b7355;
+    box-shadow: 0 0 15px rgba(139, 115, 85, 0.25);
 }
 
 .title {
