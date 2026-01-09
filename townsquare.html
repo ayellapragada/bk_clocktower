@@ -1,0 +1,876 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Akshith's Townsquare</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --bg-dark: #0d0a14;
+            --bg-gradient-start: #1a1225;
+            --bg-gradient-end: #0d0a14;
+            --purple-dark: #2a1f3d;
+            --purple-mid: #3d2d5a;
+            --purple-border: #4a3a6a;
+            --gold: #d4af37;
+            --gold-light: #e8c252;
+            --text-primary: #f5f5f5;
+            --text-secondary: #a8a0b5;
+            --state-gray: #AAAAAA;
+            --state-green: #00FF00;
+            --state-white: #FFFFFF;
+            --state-purple: #800080;
+            --state-red: #FF4444;
+            --state-blue: #4444FF;
+        }
+
+        html {
+            font-size: 16px;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(180deg, var(--bg-gradient-start) 0%, var(--bg-gradient-end) 100%);
+            min-height: 100vh;
+            color: var(--text-primary);
+            line-height: 1.5;
+            padding: 1rem;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 1.5rem;
+        }
+
+        h1 {
+            font-family: 'Cinzel', serif;
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--gold);
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            margin-bottom: 0.5rem;
+        }
+
+        .connection-bar {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.75rem;
+            justify-content: center;
+            align-items: center;
+            padding: 1rem;
+            background: var(--purple-dark);
+            border: 1px solid var(--purple-border);
+            border-radius: 8px;
+            margin-bottom: 1.5rem;
+        }
+
+        .connection-bar.hidden {
+            display: none;
+        }
+
+        .status-indicator {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.875rem;
+        }
+
+        .status-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: var(--state-gray);
+            transition: background 0.3s;
+        }
+
+        .status-dot.connected {
+            background: var(--state-green);
+            box-shadow: 0 0 8px var(--state-green);
+        }
+
+        .status-dot.connecting {
+            background: var(--gold);
+            animation: pulse 1s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            padding: 0.625rem 1rem;
+            background: linear-gradient(135deg, var(--purple-dark) 0%, var(--purple-mid) 100%);
+            border: 1px solid var(--purple-border);
+            border-radius: 6px;
+            color: var(--text-primary);
+            font-size: 0.875rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .btn:hover:not(:disabled) {
+            background: linear-gradient(135deg, var(--purple-mid) 0%, #4a3870 100%);
+            border-color: var(--gold);
+            transform: translateY(-1px);
+        }
+
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--gold) 0%, var(--gold-light) 100%);
+            color: var(--bg-dark);
+            border-color: var(--gold);
+        }
+
+        .btn-primary:hover:not(:disabled) {
+            background: linear-gradient(135deg, var(--gold-light) 0%, var(--gold) 100%);
+        }
+
+        .btn-good {
+            background: linear-gradient(135deg, #1a4d1a 0%, #2d7a2d 100%);
+            border-color: var(--state-green);
+        }
+
+        .btn-evil {
+            background: linear-gradient(135deg, #4d1a4d 0%, #7a2d7a 100%);
+            border-color: var(--state-purple);
+        }
+
+        .btn-danger {
+            background: linear-gradient(135deg, #4d1a1a 0%, #7a2d2d 100%);
+            border-color: var(--state-red);
+        }
+
+        .actions-bar {
+            display: flex;
+            flex-wrap: nowrap;
+            gap: 0.75rem;
+            justify-content: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .townsquare {
+            position: relative;
+            width: 100%;
+            max-width: 600px;
+            margin: 0 auto 1.5rem;
+            aspect-ratio: 1;
+        }
+
+        .seat {
+            position: absolute;
+            width: 60px;
+            height: 60px;
+            transform: translate(-50%, -50%);
+            border-radius: 50%;
+            border: 2px solid var(--purple-border);
+            background: var(--state-gray);
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.625rem;
+            font-weight: 600;
+            color: var(--bg-dark);
+            text-align: center;
+            padding: 0.25rem;
+            transition: all 0.2s ease;
+            overflow: hidden;
+            text-shadow: 0 1px 2px rgba(255,255,255,0.3);
+        }
+
+        .seat .seat-number {
+            font-size: 0.5rem;
+            opacity: 0.7;
+        }
+
+        .seat .seat-name {
+            font-size: 0.5625rem;
+            line-height: 1.2;
+            max-width: 100%;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        /* Device cycles through: 0=Gray, 1=Green, 2=White, 3=Gray, 4=Purple, 5=White */
+        .seat.state-0 { background: var(--state-gray); }
+        .seat.state-1 { background: var(--state-green); }
+        .seat.state-2 { background: var(--state-white); }
+        .seat.state-3 { background: var(--state-gray); }
+        .seat.state-4 { background: var(--state-purple); color: var(--text-primary); }
+        .seat.state-5 { background: var(--state-white); }
+
+        .toast {
+            position: fixed;
+            bottom: 1rem;
+            left: 50%;
+            transform: translateX(-50%) translateY(100px);
+            background: var(--purple-dark);
+            border: 1px solid var(--purple-border);
+            border-radius: 6px;
+            padding: 0.75rem 1.25rem;
+            font-size: 0.875rem;
+            opacity: 0;
+            transition: all 0.3s ease;
+            z-index: 100;
+        }
+
+        .toast.show {
+            transform: translateX(-50%) translateY(0);
+            opacity: 1;
+        }
+
+        .toast.success {
+            border-color: var(--state-green);
+        }
+
+        .toast.error {
+            border-color: var(--state-red);
+        }
+
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.7);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 200;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.2s;
+        }
+
+        .modal-overlay.show {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .modal {
+            background: var(--purple-dark);
+            border: 1px solid var(--purple-border);
+            border-radius: 8px;
+            padding: 1.5rem;
+            max-width: 400px;
+            width: 90%;
+            transform: scale(0.9);
+            transition: transform 0.2s;
+        }
+
+        .modal-overlay.show .modal {
+            transform: scale(1);
+        }
+
+        .modal h2 {
+            font-family: 'Cinzel', serif;
+            font-size: 1rem;
+            color: var(--gold);
+            margin-bottom: 1rem;
+            text-transform: uppercase;
+        }
+
+        .modal input {
+            width: 100%;
+            padding: 0.625rem;
+            background: var(--bg-dark);
+            border: 1px solid var(--purple-border);
+            border-radius: 4px;
+            color: var(--text-primary);
+            font-size: 0.875rem;
+            margin-bottom: 1rem;
+        }
+
+        .modal input:focus {
+            outline: none;
+            border-color: var(--gold);
+        }
+
+        .modal-actions {
+            display: flex;
+            gap: 0.5rem;
+            justify-content: flex-end;
+        }
+
+        .player-grid {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 0.5rem;
+        }
+
+        .player-btn {
+            padding: 0.75rem 0.5rem;
+            background: var(--bg-dark);
+            border: 1px solid var(--purple-border);
+            border-radius: 6px;
+            color: var(--text-primary);
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.15s ease;
+        }
+
+        .player-btn:hover {
+            background: var(--purple-mid);
+            border-color: var(--gold);
+            transform: scale(1.05);
+        }
+
+        .mode-indicator {
+            position: fixed;
+            top: 1rem;
+            right: 1rem;
+            background: var(--gold);
+            color: var(--bg-dark);
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.2s;
+        }
+
+        .mode-indicator.show {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        @media (max-width: 600px) {
+            .seat {
+                width: 45px;
+                height: 45px;
+            }
+
+            .seat .seat-name {
+                font-size: 0.5rem;
+            }
+
+            .seat .seat-number {
+                font-size: 0.4375rem;
+            }
+
+            h1 {
+                font-size: 1.25rem;
+            }
+
+            .btn {
+                padding: 0.5rem 0.75rem;
+                font-size: 0.75rem;
+            }
+
+            .keyboard-hints {
+                display: none;
+            }
+        }
+
+        @media (max-width: 400px) {
+            .seat {
+                width: 36px;
+                height: 36px;
+            }
+
+            .seat .seat-name {
+                display: none;
+            }
+
+            .seat .seat-number {
+                font-size: 0.625rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Townsquare</h1>
+        </header>
+
+        <div class="connection-bar">
+            <div class="status-indicator">
+                <div class="status-dot" id="statusDot"></div>
+                <span id="statusText">Not Connected</span>
+            </div>
+            <button class="btn btn-primary" id="connectBtn">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M6.5 6.5l11 11M6.5 17.5l11-11M12 2v4M12 18v4"/>
+                </svg>
+                Connect
+            </button>
+        </div>
+
+        <div class="actions-bar">
+            <button class="btn btn-danger" id="resetBtn">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/>
+                    <path d="M3 3v5h5"/>
+                </svg>
+                Reset All
+            </button>
+            <button class="btn" id="editModeBtn">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
+                    <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
+                </svg>
+                Edit Names
+            </button>
+            <button class="btn btn-primary" id="setPlayersBtn">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+                    <circle cx="9" cy="7" r="4"/>
+                    <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
+                    <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+                </svg>
+                Set Players
+            </button>
+        </div>
+
+        <div class="townsquare" id="townsquare"></div>
+
+        <div class="actions-bar">
+            <button class="btn btn-good" id="goodWinBtn">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="12" cy="12" r="10"/>
+                    <path d="M8 14s1.5 2 4 2 4-2 4-2M9 9h.01M15 9h.01"/>
+                </svg>
+                Good Wins
+            </button>
+            <button class="btn btn-evil" id="evilWinBtn">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="12" cy="12" r="10"/>
+                    <path d="M16 16s-1.5-2-4-2-4 2-4 2M9 9h.01M15 9h.01"/>
+                </svg>
+                Evil Wins
+            </button>
+        </div>
+    </div>
+
+    <div class="mode-indicator" id="editModeIndicator">Edit Mode: Click seats to rename</div>
+
+    <div class="toast" id="toast"></div>
+
+    <div class="modal-overlay" id="nameModal">
+        <div class="modal">
+            <h2>Edit Seat Name</h2>
+            <input type="text" id="nameInput" placeholder="Enter player name" maxlength="20">
+            <div class="modal-actions">
+                <button class="btn" id="cancelNameBtn">Cancel</button>
+                <button class="btn btn-primary" id="saveNameBtn">Save</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="confirmModal">
+        <div class="modal">
+            <h2 id="confirmTitle">Confirm</h2>
+            <p id="confirmMessage" style="margin-bottom: 1rem; color: var(--text-secondary);"></p>
+            <div class="modal-actions">
+                <button class="btn" id="confirmCancelBtn">Cancel</button>
+                <button class="btn btn-primary" id="confirmOkBtn">Confirm</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="playersModal">
+        <div class="modal">
+            <h2>Set Number of Players</h2>
+            <p style="margin-bottom: 0.75rem; color: var(--text-secondary); font-size: 0.875rem;">Select player count to set seats 1-X as Alive</p>
+            <div class="player-grid" id="playerGrid"></div>
+            <div class="modal-actions" style="margin-top: 1rem;">
+                <button class="btn" id="cancelPlayersBtn">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Bluetooth constants
+        const SERVICE_UUID = '6e400001-b5a3-f393-e0a9-e50e24dcca9e';
+        const CHARACTERISTIC_UUID = '6e400002-b5a3-f393-e0a9-e50e24dcca9e';
+
+        // State - matches original device order
+        const TOTAL_SEATS = 20;
+        // Device cycles: 0=Gray, 1=Green, 2=White, 3=Gray, 4=Purple, 5=White
+        const STATE_COLORS = ['#AAAAAA', '#00FF00', '#FFFFFF', '#AAAAAA', '#800080', '#FFFFFF'];
+
+        let bluetoothDevice = null;
+        let bluetoothCharacteristic = null;
+        let isConnected = false;
+        let editMode = false;
+        let currentEditSeat = null;
+
+        // Game state - states reset on load, only names persist
+        let seatStates = Array(TOTAL_SEATS).fill(0); // Start at 0 (gray) like original
+        let seatNames = Array.from({ length: TOTAL_SEATS }, (_, i) => `Seat ${i + 1}`);
+
+        // DOM elements
+        const townsquare = document.getElementById('townsquare');
+        const connectionBar = document.querySelector('.connection-bar');
+        const statusDot = document.getElementById('statusDot');
+        const statusText = document.getElementById('statusText');
+        const connectBtn = document.getElementById('connectBtn');
+        const goodWinBtn = document.getElementById('goodWinBtn');
+        const evilWinBtn = document.getElementById('evilWinBtn');
+        const resetBtn = document.getElementById('resetBtn');
+        const editModeBtn = document.getElementById('editModeBtn');
+        const toast = document.getElementById('toast');
+        const nameModal = document.getElementById('nameModal');
+        const nameInput = document.getElementById('nameInput');
+        const confirmModal = document.getElementById('confirmModal');
+        const editModeIndicator = document.getElementById('editModeIndicator');
+        const playersModal = document.getElementById('playersModal');
+        const playerGrid = document.getElementById('playerGrid');
+        const setPlayersBtn = document.getElementById('setPlayersBtn');
+
+        // Initialize
+        function init() {
+            loadFromStorage();
+            createSeats();
+            createPlayerButtons();
+            setupEventListeners();
+        }
+
+        // Create circular seat layout
+        // Seats go clockwise with 20 and 1 at the top (split at 12 o'clock)
+        function createSeats() {
+            townsquare.innerHTML = '';
+            const centerX = 50;
+            const centerY = 50;
+            const radius = 42;
+
+            for (let i = 0; i < TOTAL_SEATS; i++) {
+                // Offset by half a seat so 20 and 1 straddle the top
+                // i=0 (seat 1) should be just right of top, i=19 (seat 20) just left of top
+                const angle = ((i + 0.5) / TOTAL_SEATS) * 2 * Math.PI - Math.PI / 2;
+                const x = centerX + radius * Math.cos(angle);
+                const y = centerY + radius * Math.sin(angle);
+
+                const seat = document.createElement('button');
+                seat.className = `seat state-${seatStates[i]}`;
+                seat.style.left = `${x}%`;
+                seat.style.top = `${y}%`;
+                seat.style.backgroundColor = STATE_COLORS[seatStates[i]];
+                seat.dataset.index = i;
+                seat.innerHTML = `
+                    <span class="seat-number">${i + 1}</span>
+                    <span class="seat-name">${seatNames[i]}</span>
+                `;
+                seat.addEventListener('click', () => handleSeatClick(i));
+                townsquare.appendChild(seat);
+            }
+        }
+
+        // Handle seat click
+        function handleSeatClick(index) {
+            if (editMode) {
+                openNameModal(index);
+            } else {
+                cycleSeatState(index);
+            }
+        }
+
+        // Cycle seat state - simple, matches original: just cycle through all 6 states
+        function cycleSeatState(index) {
+            seatStates[index] = (seatStates[index] + 1) % STATE_COLORS.length;
+            updateSeatDisplay(index);
+            sendCommand(`BTN${index + 1}\n`);
+        }
+
+        // Update single seat display
+        function updateSeatDisplay(index) {
+            const seat = townsquare.children[index];
+            seat.className = `seat state-${seatStates[index]}`;
+            seat.style.backgroundColor = STATE_COLORS[seatStates[index]];
+            seat.querySelector('.seat-name').textContent = seatNames[index];
+        }
+
+        // Open name edit modal
+        function openNameModal(index) {
+            currentEditSeat = index;
+            nameInput.value = seatNames[index].startsWith('Seat ') ? '' : seatNames[index];
+            nameModal.classList.add('show');
+            setTimeout(() => nameInput.focus(), 100);
+        }
+
+        // Save seat name
+        function saveSeatName() {
+            if (currentEditSeat !== null) {
+                const name = nameInput.value.trim() || `Seat ${currentEditSeat + 1}`;
+                seatNames[currentEditSeat] = name;
+                updateSeatDisplay(currentEditSeat);
+                saveToStorage();
+                showToast(`Renamed to "${name}"`, 'success');
+            }
+            closeNameModal();
+        }
+
+        function closeNameModal() {
+            nameModal.classList.remove('show');
+            currentEditSeat = null;
+        }
+
+        // Toggle edit mode
+        function toggleEditMode() {
+            editMode = !editMode;
+            editModeBtn.classList.toggle('btn-primary', editMode);
+            editModeIndicator.classList.toggle('show', editMode);
+        }
+
+        // Bluetooth connection
+        async function connectBluetooth() {
+            if (!navigator.bluetooth) {
+                showToast('Web Bluetooth not supported in this browser', 'error');
+                return;
+            }
+
+            try {
+                updateConnectionStatus('connecting');
+                statusText.textContent = 'Scanning...';
+
+                bluetoothDevice = await navigator.bluetooth.requestDevice({
+                    filters: [{ name: 'Townsquare' }],
+                    optionalServices: [SERVICE_UUID]
+                });
+
+                statusText.textContent = 'Connecting...';
+                const server = await bluetoothDevice.gatt.connect();
+                const service = await server.getPrimaryService(SERVICE_UUID);
+                bluetoothCharacteristic = await service.getCharacteristic(CHARACTERISTIC_UUID);
+
+                bluetoothDevice.addEventListener('gattserverdisconnected', onDisconnected);
+
+                isConnected = true;
+                updateConnectionStatus('connected');
+                statusText.textContent = 'Connected';
+                showToast('Connected', 'success');
+
+            } catch (error) {
+                console.error('Bluetooth error:', error);
+                updateConnectionStatus('disconnected');
+                statusText.textContent = 'Connection failed';
+                showToast(error.message || 'Failed to connect', 'error');
+            }
+        }
+
+        function onDisconnected() {
+            isConnected = false;
+            bluetoothCharacteristic = null;
+            updateConnectionStatus('disconnected');
+            statusText.textContent = 'Disconnected';
+            showToast('Device disconnected', 'error');
+        }
+
+        function updateConnectionStatus(status) {
+            statusDot.className = 'status-dot';
+            if (status === 'connected') {
+                statusDot.classList.add('connected');
+                connectionBar.classList.add('hidden');
+            } else {
+                connectionBar.classList.remove('hidden');
+            }
+            if (status === 'connecting') statusDot.classList.add('connecting');
+        }
+
+        // Command queue to ensure sequential sending
+        let commandQueue = [];
+        let isProcessingQueue = false;
+
+        async function processCommandQueue() {
+            if (isProcessingQueue || commandQueue.length === 0) return;
+            isProcessingQueue = true;
+
+            while (commandQueue.length > 0) {
+                const cmd = commandQueue.shift();
+                if (bluetoothCharacteristic && bluetoothCharacteristic.properties.write) {
+                    try {
+                        await bluetoothCharacteristic.writeValue(new TextEncoder().encode(cmd));
+                        console.log(`Sent: ${cmd.trim()}`);
+                        // Small delay between commands to let device process
+                        await new Promise(resolve => setTimeout(resolve, 100));
+                    } catch (err) {
+                        console.error('Send error:', err);
+                        showToast('Failed to send command', 'error');
+                    }
+                }
+            }
+
+            isProcessingQueue = false;
+        }
+
+        // Send command to device (queued for batch operations)
+        function sendCommand(cmd) {
+            commandQueue.push(cmd);
+            processCommandQueue();
+        }
+
+        // Send command immediately (for single operations like seat clicks)
+        function sendCommandImmediate(cmd) {
+            if (bluetoothCharacteristic && bluetoothCharacteristic.properties.write) {
+                bluetoothCharacteristic.writeValue(new TextEncoder().encode(cmd))
+                    .then(() => console.log(`Sent: ${cmd.trim()}`))
+                    .catch(err => {
+                        console.error('Send error:', err);
+                        showToast('Failed to send command', 'error');
+                    });
+            }
+        }
+
+        // Game actions
+        function triggerGoodWin() {
+            showConfirm('Good Team Wins!', 'Trigger the Good Team victory animation?', () => {
+                sendCommand('SCENE1\n');
+                showToast('Good team wins!', 'success');
+            });
+        }
+
+        function triggerEvilWin() {
+            showConfirm('Evil Team Wins!', 'Trigger the Evil Team victory animation?', () => {
+                sendCommand('SCENE2\n');
+                showToast('Evil team wins!', 'success');
+            });
+        }
+
+        function resetAll() {
+            showConfirm('Reset All', 'Reset all seats to gray/off? Names will be preserved.', () => {
+                seatStates = Array(TOTAL_SEATS).fill(0); // 0 = gray in our state array
+                createSeats();
+                // RESET sets device back to state 0 (gray)
+                sendCommand('RESET');
+                showToast('All seats reset', 'success');
+            });
+        }
+
+        // Player count setup
+        function createPlayerButtons() {
+            playerGrid.innerHTML = '';
+            for (let i = 5; i <= 20; i++) {
+                const btn = document.createElement('button');
+                btn.className = 'player-btn';
+                btn.textContent = i;
+                btn.addEventListener('click', () => setPlayerCount(i));
+                playerGrid.appendChild(btn);
+            }
+        }
+
+        function openPlayersModal() {
+            playersModal.classList.add('show');
+        }
+
+        function closePlayersModal() {
+            playersModal.classList.remove('show');
+        }
+
+        function setPlayerCount(count) {
+            // Set 1-count to alive (state 1 = green), rest to off/gray (state 0)
+            for (let i = 0; i < TOTAL_SEATS; i++) {
+                seatStates[i] = i < count ? 1 : 0; // 1 = Alive (green), 0 = off (gray)
+            }
+            createSeats();
+
+            // Send commands to match screen state
+            // RESET sets device to state 0 (gray). Players 1-count need 1 BTN press to go green.
+            // Commands are queued and sent sequentially with proper waits
+            sendCommand('RESET');
+            for (let i = 0; i < count; i++) {
+                sendCommand(`BTN${i + 1}\n`);
+            }
+
+            closePlayersModal();
+            showToast(`Set up ${count} players`, 'success');
+        }
+
+        // Storage - only names persist, states reset on refresh
+        function saveToStorage() {
+            localStorage.setItem('townsquare_names', JSON.stringify(seatNames));
+        }
+
+        function loadFromStorage() {
+            try {
+                const names = JSON.parse(localStorage.getItem('townsquare_names'));
+                if (names && names.length === TOTAL_SEATS) seatNames = names;
+            } catch (e) {
+                console.error('Failed to load from storage:', e);
+            }
+        }
+
+        // UI helpers
+        function showToast(message, type = '') {
+            toast.textContent = message;
+            toast.className = 'toast show ' + type;
+            setTimeout(() => toast.classList.remove('show'), 3000);
+        }
+
+        let confirmCallback = null;
+        function showConfirm(title, message, callback) {
+            document.getElementById('confirmTitle').textContent = title;
+            document.getElementById('confirmMessage').textContent = message;
+            confirmCallback = callback;
+            confirmModal.classList.add('show');
+        }
+
+        // Event listeners
+        function setupEventListeners() {
+            connectBtn.addEventListener('click', connectBluetooth);
+            goodWinBtn.addEventListener('click', triggerGoodWin);
+            evilWinBtn.addEventListener('click', triggerEvilWin);
+            resetBtn.addEventListener('click', resetAll);
+            editModeBtn.addEventListener('click', toggleEditMode);
+
+            // Name modal
+            document.getElementById('saveNameBtn').addEventListener('click', saveSeatName);
+            document.getElementById('cancelNameBtn').addEventListener('click', closeNameModal);
+            nameInput.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter') saveSeatName();
+                if (e.key === 'Escape') closeNameModal();
+            });
+
+            // Confirm modal
+            document.getElementById('confirmOkBtn').addEventListener('click', () => {
+                confirmModal.classList.remove('show');
+                if (confirmCallback) confirmCallback();
+            });
+            document.getElementById('confirmCancelBtn').addEventListener('click', () => {
+                confirmModal.classList.remove('show');
+            });
+
+            // Players modal
+            setPlayersBtn.addEventListener('click', openPlayersModal);
+            document.getElementById('cancelPlayersBtn').addEventListener('click', closePlayersModal);
+
+            // Close modals on overlay click
+            [nameModal, confirmModal, playersModal].forEach(modal => {
+                modal.addEventListener('click', (e) => {
+                    if (e.target === modal) modal.classList.remove('show');
+                });
+            });
+        }
+
+        // Start
+        init();
+    </script>
+</body>
+</html>
