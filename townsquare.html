@@ -576,7 +576,6 @@
 
         // Initialize
         function init() {
-            loadFromStorage();
             createSeats();
             createPlayerButtons();
             setupEventListeners();
@@ -650,7 +649,6 @@
                 const name = nameInput.value.trim() || `Seat ${currentEditSeat + 1}`;
                 seatNames[currentEditSeat] = name;
                 updateSeatDisplay(currentEditSeat);
-                saveToStorage();
                 showToast(`Renamed to "${name}"`, 'success');
             }
             closeNameModal();
@@ -783,8 +781,10 @@
         }
 
         function resetAll() {
-            showConfirm('Reset All', 'Reset all seats to gray/off? Names will be preserved.', () => {
+            showConfirm('Reset All', 'Reset all seats and names?', () => {
                 seatStates = Array(TOTAL_SEATS).fill(0); // 0 = gray in our state array
+                seatNames = Array.from({ length: TOTAL_SEATS }, (_, i) => `Seat ${i + 1}`);
+                localStorage.removeItem('townsquare_names');
                 createSeats();
                 // RESET sets device back to state 0 (gray)
                 sendCommand('RESET');
@@ -829,20 +829,6 @@
 
             closePlayersModal();
             showToast(`Set up ${count} players`, 'success');
-        }
-
-        // Storage - only names persist, states reset on refresh
-        function saveToStorage() {
-            localStorage.setItem('townsquare_names', JSON.stringify(seatNames));
-        }
-
-        function loadFromStorage() {
-            try {
-                const names = JSON.parse(localStorage.getItem('townsquare_names'));
-                if (names && names.length === TOTAL_SEATS) seatNames = names;
-            } catch (e) {
-                console.error('Failed to load from storage:', e);
-            }
         }
 
         // UI helpers

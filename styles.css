@@ -86,11 +86,40 @@ body {
     margin-bottom: 0.125rem;
 }
 
+.subtitle-link {
+    color: inherit;
+    text-decoration: none;
+    transition: color 0.2s ease;
+}
+
+.subtitle-link:hover {
+    color: var(--gold);
+}
+
 .tagline {
     font-size: 0.8125rem;
     color: var(--text-secondary);
     text-align: center;
     margin-bottom: 1.5rem;
+}
+
+.tagline-link {
+    color: inherit;
+    text-decoration: none;
+    transition: color 0.2s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+}
+
+.tagline-link:hover {
+    color: var(--gold);
+}
+
+.location-icon {
+    width: 14px;
+    height: 14px;
+    flex-shrink: 0;
 }
 
 .divider {
@@ -149,37 +178,40 @@ body {
 .link-button:hover {
     background: var(--button-bg-hover);
     border-color: var(--gold);
-    transform: translateY(-2px);
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+}
+
+.link-button:hover .link-text {
+    color: var(--gold);
 }
 
 .link-button:active {
     transform: translateY(0);
-    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
 }
 
 .icon-wrapper {
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 40px;
-    height: 40px;
+    width: 44px;
+    height: 44px;
     border-radius: 50%;
-    background: linear-gradient(135deg, var(--gold) 0%, var(--gold-dark) 100%);
+    background: transparent;
+    border: 2px solid var(--gold-dark);
     margin-right: 1rem;
     flex-shrink: 0;
 }
 
 .icon {
-    width: 18px;
-    height: 18px;
+    width: 20px;
+    height: 20px;
     flex-shrink: 0;
-    color: #1a0f1e;
-    stroke-width: 2.5;
+    color: var(--gold);
+    stroke-width: 2;
 }
 
 .link-text {
     flex: 1;
+    transition: color 0.2s ease;
 }
 
 .link-chevron {
@@ -267,13 +299,13 @@ body {
     }
 
     .icon-wrapper {
-        width: 44px;
-        height: 44px;
+        width: 48px;
+        height: 48px;
     }
 
     .icon {
-        width: 20px;
-        height: 20px;
+        width: 22px;
+        height: 22px;
     }
 }
 
@@ -294,6 +326,18 @@ body {
 
     .title {
         font-size: 1.75rem;
+    }
+}
+
+/* Mobile - full bleed card */
+@media (max-width: 767px) {
+    body {
+        padding: 0;
+    }
+
+    .container {
+        border-radius: 0;
+        min-height: 100vh;
     }
 }
 
