@@ -389,18 +389,46 @@
             }
         }
 
-        @media (max-width: 400px) {
+        @media (max-width: 500px) {
+            body {
+                padding: 0.5rem;
+            }
+
+            .container {
+                max-width: 100%;
+            }
+
+            .townsquare {
+                max-width: 100%;
+                margin: 0 auto 1rem;
+            }
+
             .seat {
-                width: 36px;
-                height: 36px;
+                width: 50px;
+                height: 50px;
             }
 
             .seat .seat-name {
-                display: none;
+                font-size: 0.45rem;
             }
 
             .seat .seat-number {
-                font-size: 0.625rem;
+                font-size: 0.4rem;
+            }
+
+            .actions-bar {
+                gap: 0.5rem;
+            }
+
+            .btn {
+                padding: 0.4rem 0.6rem;
+                font-size: 0.7rem;
+                gap: 0.3rem;
+            }
+
+            .btn svg {
+                width: 14px;
+                height: 14px;
             }
         }
     </style>
@@ -560,7 +588,7 @@
             townsquare.innerHTML = '';
             const centerX = 50;
             const centerY = 50;
-            const radius = 42;
+            const radius = 46;
 
             for (let i = 0; i < TOTAL_SEATS; i++) {
                 // Offset by half a seat so 20 and 1 straddle the top
