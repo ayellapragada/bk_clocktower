@@ -131,36 +131,6 @@ body {
     flex-shrink: 0;
 }
 
-.social-icons {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 0.75rem;
-    margin-bottom: 1rem;
-}
-
-.social-icon {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 36px;
-    height: 36px;
-    border-radius: 50%;
-    background: rgba(245, 245, 245, 0.1);
-    color: var(--text-primary);
-    transition: all 0.2s ease;
-}
-
-.social-icon:hover {
-    background: rgba(245, 245, 245, 0.2);
-    color: var(--gold);
-}
-
-.social-icon svg {
-    width: 18px;
-    height: 18px;
-}
-
 .divider {
     display: flex;
     align-items: center;
