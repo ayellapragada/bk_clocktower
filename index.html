@@ -12,6 +12,13 @@
 </head>
 <body>
     <main class="container">
+        <button class="share-button" aria-label="Share">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/>
+                <polyline points="16 6 12 2 8 6"/>
+                <line x1="12" y1="2" x2="12" y2="15"/>
+            </svg>
+        </button>
         <div class="logo">
             <img src="assets/logo2.png" alt="Brooklyn Clocktower Logo">
         </div>
@@ -94,5 +101,41 @@
             <a href="townsquare.html" class="footer-link">Akshith's Townsquare</a>
         </footer>
     </main>
+    <script>
+        document.querySelector('.share-button').addEventListener('click', async () => {
+            const shareData = {
+                title: 'Clocktower at the Beanmonger',
+                text: 'Join us for Blood on the Clocktower game night!',
+                url: window.location.href
+            };
+
+            if (navigator.share) {
+                try {
+                    await navigator.share(shareData);
+                } catch (err) {
+                    if (err.name !== 'AbortError') {
+                        copyToClipboard();
+                    }
+                }
+            } else {
+                copyToClipboard();
+            }
+        });
+
+        function copyToClipboard() {
+            navigator.clipboard.writeText(window.location.href).then(() => {
+                const btn = document.querySelector('.share-button');
+                const originalSvg = btn.innerHTML;
+                btn.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <polyline points="20 6 9 17 4 12"/>
+                </svg>`;
+                btn.classList.add('copied');
+                setTimeout(() => {
+                    btn.classList.remove('copied');
+                    btn.innerHTML = originalSvg;
+                }, 2000);
+            });
+        }
+    </script>
 </body>
 </html>

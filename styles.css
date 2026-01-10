@@ -43,6 +43,41 @@ body {
     align-items: center;
     box-shadow: 0 -4px 32px rgba(0, 0, 0, 0.4);
     min-height: calc(100vh - 2.5rem);
+    position: relative;
+}
+
+.share-button {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: rgba(0, 0, 0, 0.3);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    color: var(--text-secondary);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+}
+
+.share-button svg {
+    width: 18px;
+    height: 18px;
+}
+
+.share-button:hover {
+    background: rgba(0, 0, 0, 0.5);
+    color: var(--text-primary);
+    border-color: rgba(255, 255, 255, 0.2);
+}
+
+.share-button.copied {
+    background: rgba(201, 162, 39, 0.3);
+    color: var(--gold);
+    border-color: var(--gold-dark);
 }
 
 .logo {
