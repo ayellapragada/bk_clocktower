@@ -431,6 +431,49 @@
                 height: 14px;
             }
         }
+
+        .footer {
+            margin-top: auto;
+            padding-top: 2rem;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .footer-divider {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            width: 100%;
+            max-width: 120px;
+        }
+
+        .footer-divider-line {
+            flex: 1;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--text-secondary), transparent);
+            opacity: 0.3;
+        }
+
+        .footer-divider-chevron {
+            color: var(--text-secondary);
+            opacity: 0.5;
+            font-size: 0.875rem;
+        }
+
+        .footer-link {
+            font-size: 0.8125rem;
+            color: var(--text-secondary);
+            text-decoration: none;
+            transition: color 0.2s ease;
+        }
+
+        .footer-link:hover {
+            color: var(--gold);
+        }
     </style>
 </head>
 <body>
@@ -496,6 +539,15 @@
                 Evil Wins
             </button>
         </div>
+
+        <footer class="footer">
+            <div class="footer-divider">
+                <span class="footer-divider-line"></span>
+                <span class="footer-divider-chevron">&#x2039;</span>
+                <span class="footer-divider-line"></span>
+            </div>
+            <a href="index.html" class="footer-link">Index</a>
+        </footer>
     </div>
 
     <div class="mode-indicator" id="editModeIndicator">Edit Mode: Click seats to rename</div>
